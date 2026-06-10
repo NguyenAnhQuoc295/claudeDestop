@@ -1,0 +1,8 @@
+{
+  "project_name": "Claude Logger System Dev",
+  "project_code": "CLAUDE-LOGGER-DEV",
+  "project_training_folder_url": "https://drive.google.com/drive/folders/project-training-folder-example",
+  "skill_file_url": "https://drive.google.com/file/d/skill-file-example/view",
+  "instruction_file_url": "https://drive.google.com/file/d/instruction-file-example/view",
+  "kb_folder_url": "https://drive.google.com/drive/folders/kb-folder-example"
+}

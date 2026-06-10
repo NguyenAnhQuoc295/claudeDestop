@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Prompt Logger - Dashboard</title>
+    <!-- Outfit Font and Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        h1 {
+            font-family: 'Outfit', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div>
+                <h1>🤖 Claude Prompt Logger <span class="badge-version">v1.0.0</span></h1>
+                <p style="color: var(--text-secondary); margin-top: 0.25rem;">Hệ thống lưu trữ và giám sát prompt nội bộ doanh nghiệp</p>
+            </div>
+            <div>
+                <a href="/" class="btn btn-secondary">🔄 Tải lại Trang</a>
+            </div>
+        </header>
+
+        <!-- Stats Grid -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <span class="stat-title">Tổng số prompts</span>
+                <span class="stat-value">{{ total_prompts }}</span>
+                <span class="stat-icon">💬</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-title">Nhân viên hoạt động</span>
+                <span class="stat-value">{{ unique_employees }}</span>
+                <span class="stat-icon">👥</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-title">Số lượng dự án</span>
+                <span class="stat-value">{{ unique_projects }}</span>
+                <span class="stat-icon">📁</span>
+            </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <div class="filters-header">🔍 Bộ lọc & Tìm kiếm</div>
+            <form action="/" method="GET" class="filters-form">
+                <div class="filter-group">
+                    <label for="from_date">Từ ngày</label>
+                    <input type="date" id="from_date" name="from_date" class="filter-input" value="{{ filters.from_date }}">
+                </div>
+                <div class="filter-group">
+                    <label for="to_date">Đến ngày</label>
+                    <input type="date" id="to_date" name="to_date" class="filter-input" value="{{ filters.to_date }}">
+                </div>
+                <div class="filter-group">
+                    <label for="employee_email">Email nhân viên</label>
+                    <input type="text" id="employee_email" name="employee_email" class="filter-input" placeholder="Ví dụ: nguyenvana@..." value="{{ filters.employee_email }}">
+                </div>
+                <div class="filter-group">
+                    <label for="machine_id">Machine ID</label>
+                    <input type="text" id="machine_id" name="machine_id" class="filter-input" placeholder="Ví dụ: SALE-MAC-001" value="{{ filters.machine_id }}">
+                </div>
+                <div class="filter-group">
+                    <label for="project_code">Mã dự án</label>
+                    <input type="text" id="project_code" name="project_code" class="filter-input" placeholder="Ví dụ: AI-SALES-001" value="{{ filters.project_code }}">
+                </div>
+                <div class="filter-group">
+                    <label for="project_name">Tên dự án</label>
+                    <input type="text" id="project_name" name="project_name" class="filter-input" placeholder="Ví dụ: Claude Sales..." value="{{ filters.project_name }}">
+                </div>
+                <div class="filter-group" style="grid-column: span 2;">
+                    <label for="keyword">Từ khóa Prompt</label>
+                    <input type="text" id="keyword" name="keyword" class="filter-input" placeholder="Tìm kiếm nội dung câu lệnh..." value="{{ filters.keyword }}">
+                </div>
+                <div class="form-actions">
+                    <a href="/" class="btn btn-secondary">Clear Filters</a>
+                    <button type="submit" class="btn btn-primary">Áp dụng bộ lọc</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Table Grid -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 150px;">Thời gian tạo</th>
+                        <th>Nhân viên (Email)</th>
+                        <th>Thiết bị (Machine ID)</th>
+                        <th>Dự án</th>
+                        <th>Workspace Folder</th>
+                        <th>Session ID</th>
+                        <th>Nội dung Prompt (Preview)</th>
+                        <th style="text-align: center; width: 110px;">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if records %}
+                        {% for record in records %}
+                            <tr>
+                                <td style="white-space: nowrap; color: var(--text-secondary);">
+                                    {{ record.created_at | format_datetime }}
+                                </td>
+                                <td>
+                                    <span class="badge badge-email">{{ record.employee_email }}</span>
+                                </td>
+                                <td style="color: var(--text-secondary); font-family: monospace;">
+                                    {{ record.machine_id }}
+                                </td>
+                                <td>
+                                    {% if record.project_code and record.project_code != 'Unknown' %}
+                                        <span class="badge badge-project" title="{{ record.project_name }}">{{ record.project_code }}</span>
+                                    {% else %}
+                                        <span class="badge" style="color: var(--text-secondary);">Unknown</span>
+                                    {% endif %}
+                                </td>
+                                <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: monospace;" title="{{ record.workspace_folder }}">
+                                    {{ record.workspace_folder }}
+                                </td>
+                                <td style="max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: monospace;" title="{{ record.session_id }}">
+                                    {{ record.session_id }}
+                                </td>
+                                <td>
+                                    <div class="preview-text" title="{{ record.prompt }}">
+                                        {{ record.prompt }}
+                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                    <a href="/logs/{{ record.id }}" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; display: inline-flex;">Xem chi tiết</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                                📭 Không tìm thấy kết quả nào khớp với bộ lọc hiện tại.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

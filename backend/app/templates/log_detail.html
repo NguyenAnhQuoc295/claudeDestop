@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Prompt Logger - Chi tiết Log #{{ record.id }}</title>
+    <!-- Outfit Font and Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        h1, h2, h3 {
+            font-family: 'Outfit', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div>
+                <h1>📋 Chi tiết Prompt Log #{{ record.id }}</h1>
+                <p style="color: var(--text-secondary); margin-top: 0.25rem;">Thông tin chi tiết về câu lệnh gửi lên lúc {{ record.created_at | format_datetime }}</p>
+            </div>
+            <div>
+                <a href="/" class="btn btn-secondary">⬅️ Quay lại Dashboard</a>
+            </div>
+        </header>
+
+        <!-- Information Cards -->
+        <div class="card-detail">
+            <h2 style="font-size: 1.25rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; color: #93c5fd;">
+                ℹ️ Thông tin hệ thống
+            </h2>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="detail-label">Mã Bản Ghi (ID)</span>
+                    <span class="detail-value" style="font-family: monospace;">#{{ record.id }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Mã Sự Kiện (Event ID)</span>
+                    <span class="detail-value" style="font-family: monospace;">{{ record.event_id }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Thời gian Client gửi</span>
+                    <span class="detail-value">{{ record.created_at | format_datetime }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Thời gian Server nhận</span>
+                    <span class="detail-value">{{ record.server_received_at | format_datetime }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Nhân viên</span>
+                    <span class="detail-value">
+                        <span class="badge badge-email">{{ record.employee_email }}</span>
+                    </span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Thiết bị (Machine ID)</span>
+                    <span class="detail-value" style="font-family: monospace;">{{ record.machine_id }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Mã dự án (Project Code)</span>
+                    <span class="detail-value">
+                        <span class="badge badge-project">{{ record.project_code }}</span>
+                    </span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Tên dự án</span>
+                    <span class="detail-value">{{ record.project_name }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Workspace Folder</span>
+                    <span class="detail-value" style="font-family: monospace; word-break: break-all;">{{ record.workspace_folder or 'N/A' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Session ID</span>
+                    <span class="detail-value" style="font-family: monospace; word-break: break-all;">{{ record.session_id or 'N/A' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Nguồn gửi (Source App)</span>
+                    <span class="detail-value">{{ record.source_app or 'N/A' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Sự kiện Hook</span>
+                    <span class="detail-value" style="font-family: monospace;">{{ record.hook_event or 'N/A' }}</span>
+                </div>
+                <div class="detail-item" style="grid-column: span 2;">
+                    <span class="detail-label">Mã Hash SHA256</span>
+                    <span class="detail-value" style="font-family: monospace; font-size: 0.85rem; word-break: break-all;">{{ record.prompt_hash }}</span>
+                </div>
+            </div>
+
+            <!-- Related Files -->
+            <div class="related-files-section">
+                <span class="detail-label">Tài liệu liên quan trong Prompt (Related Files)</span>
+                <div class="related-files-list">
+                    {% if related_files %}
+                        {% for file in related_files %}
+                            <span class="file-tag">📄 {{ file }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span style="color: var(--text-secondary); font-style: italic; font-size: 0.875rem;">Không có tài liệu nào được nhắc tới trong prompt.</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Training Resources Link Section -->
+            <div class="resources-section">
+                <h3 class="resources-title">📚 Tài nguyên học tập & Huấn luyện (Training Resources)</h3>
+                <div class="resources-grid">
+                    <!-- Employee Training Folder -->
+                    <div class="resource-link-card">
+                        <span class="name">Employee Training Folder</span>
+                        {% if training_resources.employee_training_folder_url %}
+                            <a href="{{ training_resources.employee_training_folder_url }}" target="_blank" class="link">🔗 Mở thư mục đào tạo</a>
+                        {% else %}
+                            <span class="empty">Chưa có liên kết</span>
+                        {% endif %}
+                    </div>
+                    <!-- Project Training Folder -->
+                    <div class="resource-link-card">
+                        <span class="name">Project Training Folder</span>
+                        {% if training_resources.project_training_folder_url %}
+                            <a href="{{ training_resources.project_training_folder_url }}" target="_blank" class="link">🔗 Mở thư mục dự án</a>
+                        {% else %}
+                            <span class="empty">Chưa có liên kết</span>
+                        {% endif %}
+                    </div>
+                    <!-- Skill File -->
+                    <div class="resource-link-card">
+                        <span class="name">Skill File</span>
+                        {% if training_resources.skill_file_url %}
+                            <a href="{{ training_resources.skill_file_url }}" target="_blank" class="link">📄 Mở file kỹ năng</a>
+                        {% else %}
+                            <span class="empty">Chưa có liên kết</span>
+                        {% endif %}
+                    </div>
+                    <!-- Instruction File -->
+                    <div class="resource-link-card">
+                        <span class="name">Instruction File</span>
+                        {% if training_resources.instruction_file_url %}
+                            <a href="{{ training_resources.instruction_file_url }}" target="_blank" class="link">📝 Mở file hướng dẫn</a>
+                        {% else %}
+                            <span class="empty">Chưa có liên kết</span>
+                        {% endif %}
+                    </div>
+                    <!-- KB Folder -->
+                    <div class="resource-link-card">
+                        <span class="name">Knowledge Base Folder (KB)</span>
+                        {% if training_resources.kb_folder_url %}
+                            <a href="{{ training_resources.kb_folder_url }}" target="_blank" class="link">🧠 Mở thư mục tri thức</a>
+                        {% else %}
+                            <span class="empty">Chưa có liên kết</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Prompt Section -->
+            <div class="prompt-section">
+                <div class="prompt-header">
+                    <span class="detail-label" style="font-size: 0.85rem; font-weight: 700; color: #93c5fd;">💬 Nội dung Prompt nguyên văn</span>
+                    <button class="btn btn-primary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; display: inline-flex;" onclick="copyPrompt()">
+                        📋 Sao chép Prompt
+                    </button>
+                </div>
+                <div id="full-prompt-content" class="prompt-box">{{ record.prompt }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="copy-toast" class="toast">
+        ✅ Đã sao chép prompt vào clipboard thành công!
+    </div>
+
+    <script>
+        function copyPrompt() {
+            const promptText = document.getElementById('full-prompt-content').innerText;
+            navigator.clipboard.writeText(promptText).then(() => {
+                const toast = document.getElementById('copy-toast');
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2500);
+            }).catch(err => {
+                alert('Có lỗi xảy ra khi sao chép: ' + err);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: claude_prompt_logger_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_NAME=Claude Prompt Logger
+      - DATABASE_URL=sqlite:///./prompt_logger.db
+      - PROMPT_LOG_API_KEY=dev-secret
+      - TIMEZONE=Asia/Ho_Chi_Minh
+    volumes:
+      - ./backend/prompt_logger.db:/app/prompt_logger.db
+
+    restart: unless-stopped
