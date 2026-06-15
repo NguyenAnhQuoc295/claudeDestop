@@ -1,8 +1,8 @@
-version: '3.8'
-
 services:
   backend:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     container_name: claude_prompt_logger_backend
     ports:
       - "8000:8000"

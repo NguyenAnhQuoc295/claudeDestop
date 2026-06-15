@@ -1,0 +1,12 @@
+INFO:     127.0.0.1:61818 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61818 - "GET /assets/index-BTkZVWlk.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61816 - "GET /assets/index-CPnDyPqf.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61816 - "GET /favicon.svg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61818 - "GET /api/dashboard/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61817 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61817 - "GET /assets/index-BTkZVWlk.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:61828 - "GET /assets/index-CPnDyPqf.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:61828 - "GET /api/dashboard/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61830 - "GET /api/dashboard/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61831 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61961 - "GET /api/dashboard/employee/frank%40immbda.com/sessions HTTP/1.1" 200 OK

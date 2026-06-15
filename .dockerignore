@@ -1,0 +1,12 @@
+.git
+.gitignore
+backend/.venv
+backend/__pycache__
+backend/app/__pycache__
+backend/prompt_logger.db
+backend/uvicorn_local.*.log
+client.zip
+dashboard-ui/dist
+dashboard-ui/node_modules
+**/__pycache__
+**/*.pyc
